@@ -1,6 +1,6 @@
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe 'Bulk Discounts Show Page' do
+RSpec.describe "Bulk Discount Edit Page" do
   before :each do
     @merchant1 = Merchant.create!(name: 'Hair Care')
 
@@ -45,17 +45,28 @@ RSpec.describe 'Bulk Discounts Show Page' do
     @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_2.id)
   end
 
-  it 'has the percentage discount, quantity threshold and merchant name' do
-    visit merchant_bulk_discount_path(@merchant1, @bulk_discount_1)
-    expect(page).to have_content(@bulk_discount_1.percentage_discount)
-    expect(page).to have_content(@bulk_discount_1.quantity_threshold)
-    expect(page).to have_content(@merchant1.name)
-  end
+  it 'has a form to edit discount (happy path)' do
+    visit edit_merchant_bulk_discount_path(@merchant1, @bulk_discount_1)
+    
 
-  it 'has a link to edit the bulk discount' do
-    visit merchant_bulk_discount_path(@merchant1, @bulk_discount_1)
-    expect(page).to have_content("Edit Discount")
-    click_on "Edit Discount"
-    expect(current_path).to eq(edit_merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
+    fill_in "Percentage Discount", with: 50
+    fill_in "Quantity Threshold", with: 500
+    click_on "Submit"
+    expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
+    expect(page).to have_content("50% Discount")
+    expect(page).to have_content("Quantity Threshold: 500")
+    expect(page).to have_content("Bulk discount has been updated")
   end
+  #
+  # it 'has a form to edit discount (sad path)' do
+  #   visit edit_merchant_bulk_discount_path(@merchant1, @bulk_discount_1)
+  #
+  #   fill_in "Percentage Discount", with: 50
+  #   click_on "Submit"
+  #   save_and_open_page
+  #
+  #   expect(current_path).to eq(edit_merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
+  #
+  #   expect(page).to have_content("Error: #{error_message(@bulk_discount_1.errors)}")
+  # end
 end
