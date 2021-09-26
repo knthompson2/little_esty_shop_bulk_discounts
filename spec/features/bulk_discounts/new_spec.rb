@@ -52,7 +52,6 @@ RSpec.describe "Bulk Discount New Page" do
     fill_in "Quantity Threshold", with: 300
     click_on "Submit"
     expect(current_path).to eq(merchant_bulk_discounts_path(@merchant1))
-    save_and_open_page
     expect(page).to have_content("50% Discount")
     expect(page).to have_content("Quantity Threshold: 300")
     expect(page).to have_content("New bulk discount was created!")
