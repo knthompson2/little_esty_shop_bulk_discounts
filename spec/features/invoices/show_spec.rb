@@ -71,7 +71,6 @@ RSpec.describe 'invoices show' do
 
   it "shows the item information" do
     visit merchant_invoice_path(@merchant1, @invoice_1)
-
     expect(page).to have_content(@item_1.name)
     expect(page).to have_content(@ii_1.quantity)
     expect(page).to have_content(@ii_1.unit_price)
@@ -100,4 +99,32 @@ RSpec.describe 'invoices show' do
      end
   end
 
+  describe 'show page discount shit' do
+    before :each do
+      @merchant1 = Merchant.create!(name: 'Hair Care')
+      @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
+      @item_8 = Item.create!(name: "Butterfly Clip", description: "This holds up your hair but in a clip", unit_price: 5, merchant_id: @merchant1.id)
+      @item_2 = Item.create!(name: "Conditioner", description: "This smooths your hair", unit_price: 10, merchant_id: @merchant1.id)
+      @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
+      @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-27 14:54:09")
+      @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 15, unit_price: 10, status: 2)
+      @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
+      @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
+      @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
+      @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
+      visit merchant_invoice_path(@merchant1, @invoice_1)
+    end
+    it 'shows total discounted revenue' do
+      expect(page).to have_content(@invoice_1.total_discounted_revenue)
+    end
+
+    it 'shows link to discount applied to invoice_item' do
+
+      within("#the-status-#{@ii_1.id}") do
+        expect(page).to have_content("Applied Discount")
+        click_on "Applied Discount"
+        expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bd_2))
+      end
+    end
+  end
 end
