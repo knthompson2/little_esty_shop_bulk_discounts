@@ -20,7 +20,6 @@ class Invoice < ApplicationRecord
                  .select("invoice_items.*, MAX(bulk_discounts.percentage_discount) AS maximum_discount")
                  .where("invoice_items.quantity >= bulk_discounts.quantity_threshold")
                  .group("invoice_items.id")
-
   end
 
   def total_discounted_revenue
@@ -29,4 +28,10 @@ class Invoice < ApplicationRecord
     end
     total_revenue - discount.fdiv(100)
   end
+  # def ii_total_discounted_revenue
+  #   invoice_items.sum do |ii|
+  #     ii.applied_discount.percentage_discount * ii.quantity * ii.unit_price
+  #   end
+  # end
+
 end

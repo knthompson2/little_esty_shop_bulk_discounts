@@ -40,7 +40,7 @@ RSpec.describe InvoiceItem, type: :model do
     end
   end
 
-  describe 'instance methods' do
+  it 'returns max discount percentage for specific invoice_item' do
     @merchant1 = Merchant.create!(name: 'Hair Care')
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
     @item_8 = Item.create!(name: "Butterfly Clip", description: "This holds up your hair but in a clip", unit_price: 5, merchant_id: @merchant1.id)
@@ -50,12 +50,12 @@ RSpec.describe InvoiceItem, type: :model do
     @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 15, unit_price: 10, status: 2)
     @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
     @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
-    @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-    @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
+    @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
 
-    actual = @invoice_1.max_discounts.each do |ii|
-      ii.applied_discount(ii.maximum_discount)
-    end
-    expect(@ii_1.applied_discount).to eq([@bd_2, @bd_1])
+    expect(@ii_1.applied_discount).to eq(@bd_2)
+    expect(@ii_3.applied_discount).to eq(@bd_1)
   end
+
+
 end

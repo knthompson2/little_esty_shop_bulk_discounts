@@ -15,7 +15,15 @@ class InvoiceItem < ApplicationRecord
     Invoice.order(created_at: :asc).find(invoice_ids)
   end
 
-  def applied_discount(percentage)
-    BulkDiscount.find_by(percentage_discount: percentage)
+  def applied_discount
+    item.merchant.bulk_discounts
+        .where('bulk_discounts.quantity_threshold <= ?', quantity)
+        .order('bulk_discounts.percentage_discount desc')
+        .first
+    # binding.pry
+  end
+
+  def discount?
+    applied_discount.nil?
   end
 end

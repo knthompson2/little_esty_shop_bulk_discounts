@@ -88,7 +88,6 @@ describe "bulk discount tests" do
     @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
     @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
     visit admin_invoice_path(@invoice_1)
-    save_and_open_page
     expect(page).to have_content("Total Discounted Revenue: $#{@invoice_1.total_discounted_revenue}")
 
   end

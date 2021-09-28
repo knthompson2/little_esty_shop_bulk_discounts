@@ -36,7 +36,6 @@ RSpec.describe Invoice, type: :model do
       @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
       @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
       @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
-      binding.pry
       actual = []
       @invoice_1.max_discounts.each do |discount|
         actual << discount.maximum_discount
@@ -60,7 +59,7 @@ RSpec.describe Invoice, type: :model do
       @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
       @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
 
-      expect(@invoice_1.total_discounted_revenue).to eq(280.00)
+      expect(@invoice_1.ii_total_discounted_revenue).to eq(280.00)
     end
     describe 'example 1' do
     before :each do
