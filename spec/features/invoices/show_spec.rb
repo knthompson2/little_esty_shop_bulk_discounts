@@ -113,9 +113,8 @@ RSpec.describe 'invoices show' do
       @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
       @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
       @ii_4 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_3.id, quantity: 17, unit_price: 10, status: 1)
-      @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-      @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
-
+      @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+      @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
       visit merchant_invoice_path(@merchant1, @invoice_1)
     end
 

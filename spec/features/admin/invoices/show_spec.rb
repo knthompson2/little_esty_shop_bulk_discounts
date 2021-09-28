@@ -85,12 +85,12 @@ describe "bulk discount tests" do
     @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 15, unit_price: 10, status: 2)
     @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
     @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
-    @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-    @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
+    @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
     visit admin_invoice_path(@invoice_1)
     expect(page).to have_content("Total Discounted Revenue: $#{@invoice_1.total_discounted_revenue}")
 
   end
 
-  
+
 end

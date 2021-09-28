@@ -45,16 +45,12 @@ class BulkDiscountsController < ApplicationController
     bulk_discount.update(bulk_discount_params)
     redirect_to merchant_bulk_discount_path(merchant, bulk_discount)
     flash[:alert] = "Bulk discount has been updated"
-    # else
-    #   redirect_to edit_merchant_bulk_discount_path(merchant, bulk_discount)
-    #   flash[:alert] = "Error: #{error_message(bulk_discount.errors)}"
-    # end
   end
 
 
   private
   def bulk_discount_params
-    params.require(:bulk_discount).permit(:percentage_discount, :quantity_threshold)
+    params.require(:bulk_discount).permit(:percentage_discount, :quantity_threshold, :name)
   end
 
   def find_bulk_discount_and_merchant

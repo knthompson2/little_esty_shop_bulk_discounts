@@ -53,8 +53,8 @@ RSpec.describe InvoiceItem, type: :model do
     @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
     @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
     @ii_4 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_3.id, quantity: 17, unit_price: 10, status: 1)
-    @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-    @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
+    @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
 
     expect(@ii_1.revenue).to eq(150.0)
     expect(@ii_4.revenue).to eq(170.0)
@@ -73,8 +73,8 @@ RSpec.describe InvoiceItem, type: :model do
     @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
     @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
     @ii_4 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_3.id, quantity: 17, unit_price: 10, status: 1)
-    @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-    @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
+    @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
 
     expect(@ii_1.applied_discount).to eq(@bd_2)
     expect(@ii_3.applied_discount).to eq(@bd_1)
@@ -94,9 +94,9 @@ RSpec.describe InvoiceItem, type: :model do
     @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
     @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
     @ii_4 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_3.id, quantity: 17, unit_price: 10, status: 1)
-    @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-    @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
-
+    @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
+    
     expect(@ii_1.revenue_after_discount).to eq(120.0)
   end
 
@@ -113,13 +113,13 @@ RSpec.describe InvoiceItem, type: :model do
     @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
     @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
     @ii_4 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_3.id, quantity: 17, unit_price: 10, status: 1)
-    @bd_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-    @bd_2 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 15)
+    @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
 
     invoice_items = @invoice_1.merchant_invoice_items(@merchant1)
     expect(invoice_items.total_discounted_revenue_by_ii).to eq(280.0)
 
-    #merchant 2 has no discounts applied 
+    #merchant 2 has no discounts applied
     invoice_items_2 = @invoice_1.merchant_invoice_items(@merchant2)
     expect(invoice_items_2.total_discounted_revenue_by_ii).to eq(170.0)
   end

@@ -4,9 +4,9 @@ RSpec.describe 'Bulk Discount Index Page' do
   before :each do
     @merchant1 = Merchant.create!(name: 'Hair Care')
 
-    @bulk_discount_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-    @bulk_discount_2 = @merchant1.bulk_discounts.create!(percentage_discount: 5, quantity_threshold: 7)
-    @bulk_discount_3 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 25)
+    @bulk_discount_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bulk_discount_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 5, quantity_threshold: 7)
+    @bulk_discount_3 = @merchant1.bulk_discounts.create!(name: "Discount C", percentage_discount: 20, quantity_threshold: 25)
 
     @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
     @customer_2 = Customer.create!(first_name: 'Cecilia', last_name: 'Jones')
