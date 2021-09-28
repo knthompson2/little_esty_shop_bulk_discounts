@@ -91,4 +91,6 @@ describe "bulk discount tests" do
     expect(page).to have_content("Total Discounted Revenue: $#{@invoice_1.total_discounted_revenue}")
 
   end
+
+  
 end
