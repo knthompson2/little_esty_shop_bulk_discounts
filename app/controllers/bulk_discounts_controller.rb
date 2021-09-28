@@ -23,7 +23,7 @@ class BulkDiscountsController < ApplicationController
       flash[:alert] = "New bulk discount was created!"
     else
       redirect_to new_merchant_bulk_discount_path(merchant)
-      flash[:alert] = "Error: #{error_message(bulk_discount.errors)}"
+      flash[:alert] = "Error: You must fill in all the blanks"
     end
   end
 
