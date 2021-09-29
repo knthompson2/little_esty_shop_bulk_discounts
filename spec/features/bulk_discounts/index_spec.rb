@@ -47,13 +47,14 @@ RSpec.describe 'Bulk Discount Index Page' do
 
   it 'lists all the bulk discounts for the merchant' do
     visit merchant_bulk_discounts_path(@merchant1)
+    expect(page).to have_content(@bulk_discount_1.name)
     expect(page).to have_content(@bulk_discount_1.percentage_discount)
     expect(page).to have_content(@bulk_discount_1.quantity_threshold)
     expect(page).to have_content(@bulk_discount_2.percentage_discount)
     expect(page).to have_content(@bulk_discount_2.quantity_threshold)
     expect(page).to have_content(@bulk_discount_3.percentage_discount)
     expect(page).to have_content(@bulk_discount_3.quantity_threshold)
-    click_link "10% Discount"
+    click_link "Discount A"
     expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
   end
 
