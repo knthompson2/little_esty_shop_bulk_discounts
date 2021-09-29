@@ -40,16 +40,39 @@ RSpec.describe InvoiceItem, type: :model do
     end
   end
 
-  it 'returns max discount percentage for specific invoice_item' do
+  it 'returns revenue' do
     @merchant1 = Merchant.create!(name: 'Hair Care')
+    @merchant2 = Merchant.create!(name: 'Foot Care')
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
     @item_8 = Item.create!(name: "Butterfly Clip", description: "This holds up your hair but in a clip", unit_price: 5, merchant_id: @merchant1.id)
     @item_2 = Item.create!(name: "Conditioner", description: "This smooths your hair", unit_price: 10, merchant_id: @merchant1.id)
+    @item_3 = Item.create!(name: "Foot Cream", description: "This smooths your feet", unit_price: 10, merchant_id: @merchant2.id)
     @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
     @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-27 14:54:09")
     @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 15, unit_price: 10, status: 2)
     @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
     @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
+    @ii_4 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_3.id, quantity: 17, unit_price: 10, status: 1)
+    @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
+
+    expect(@ii_1.revenue).to eq(150.0)
+    expect(@ii_4.revenue).to eq(170.0)
+  end
+
+  it 'returns max discount percentage for specific invoice_item' do
+    @merchant1 = Merchant.create!(name: 'Hair Care')
+    @merchant2 = Merchant.create!(name: 'Foot Care')
+    @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
+    @item_8 = Item.create!(name: "Butterfly Clip", description: "This holds up your hair but in a clip", unit_price: 5, merchant_id: @merchant1.id)
+    @item_2 = Item.create!(name: "Conditioner", description: "This smooths your hair", unit_price: 10, merchant_id: @merchant1.id)
+    @item_3 = Item.create!(name: "Foot Cream", description: "This smooths your feet", unit_price: 10, merchant_id: @merchant2.id)
+    @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
+    @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-27 14:54:09")
+    @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 15, unit_price: 10, status: 2)
+    @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
+    @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
+    @ii_4 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_3.id, quantity: 17, unit_price: 10, status: 1)
     @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
     @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
 
@@ -57,5 +80,48 @@ RSpec.describe InvoiceItem, type: :model do
     expect(@ii_3.applied_discount).to eq(@bd_1)
   end
 
+  #helper method for total discounted revenue by ii
+  it 'revenue of an invoice_item after discount if discount' do
+    @merchant1 = Merchant.create!(name: 'Hair Care')
+    @merchant2 = Merchant.create!(name: 'Foot Care')
+    @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
+    @item_8 = Item.create!(name: "Butterfly Clip", description: "This holds up your hair but in a clip", unit_price: 5, merchant_id: @merchant1.id)
+    @item_2 = Item.create!(name: "Conditioner", description: "This smooths your hair", unit_price: 10, merchant_id: @merchant1.id)
+    @item_3 = Item.create!(name: "Foot Cream", description: "This smooths your feet", unit_price: 10, merchant_id: @merchant2.id)
+    @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
+    @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-27 14:54:09")
+    @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 15, unit_price: 10, status: 2)
+    @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
+    @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
+    @ii_4 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_3.id, quantity: 17, unit_price: 10, status: 1)
+    @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
+    
+    expect(@ii_1.revenue_after_discount).to eq(120.0)
+  end
+
+  it 'returns total discounted revenue for designated group of invoice_items' do
+    @merchant1 = Merchant.create!(name: 'Hair Care')
+    @merchant2 = Merchant.create!(name: 'Foot Care')
+    @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
+    @item_8 = Item.create!(name: "Butterfly Clip", description: "This holds up your hair but in a clip", unit_price: 5, merchant_id: @merchant1.id)
+    @item_2 = Item.create!(name: "Conditioner", description: "This smooths your hair", unit_price: 10, merchant_id: @merchant1.id)
+    @item_3 = Item.create!(name: "Foot Cream", description: "This smooths your feet", unit_price: 10, merchant_id: @merchant2.id)
+    @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
+    @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-27 14:54:09")
+    @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 15, unit_price: 10, status: 2)
+    @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 7, unit_price: 10, status: 1)
+    @ii_3 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_2.id, quantity: 10, unit_price: 10, status: 1)
+    @ii_4 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_3.id, quantity: 17, unit_price: 10, status: 1)
+    @bd_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bd_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 20, quantity_threshold: 15)
+
+    invoice_items = @invoice_1.merchant_invoice_items(@merchant1)
+    expect(invoice_items.total_discounted_revenue_by_ii).to eq(280.0)
+
+    #merchant 2 has no discounts applied
+    invoice_items_2 = @invoice_1.merchant_invoice_items(@merchant2)
+    expect(invoice_items_2.total_discounted_revenue_by_ii).to eq(170.0)
+  end
 
 end

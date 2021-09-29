@@ -4,9 +4,9 @@ RSpec.describe "Bulk Discount Edit Page" do
   before :each do
     @merchant1 = Merchant.create!(name: 'Hair Care')
 
-    @bulk_discount_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-    @bulk_discount_2 = @merchant1.bulk_discounts.create!(percentage_discount: 5, quantity_threshold: 7)
-    @bulk_discount_3 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 25)
+    @bulk_discount_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bulk_discount_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 5, quantity_threshold: 7)
+    @bulk_discount_3 = @merchant1.bulk_discounts.create!(name: "Discount C", percentage_discount: 20, quantity_threshold: 25)
 
     @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
     @customer_2 = Customer.create!(first_name: 'Cecilia', last_name: 'Jones')
@@ -47,26 +47,15 @@ RSpec.describe "Bulk Discount Edit Page" do
 
   it 'has a form to edit discount (happy path)' do
     visit edit_merchant_bulk_discount_path(@merchant1, @bulk_discount_1)
-    
 
+    fill_in "Discount Name", with: "Discount A"
     fill_in "Percentage Discount", with: 50
     fill_in "Quantity Threshold", with: 500
     click_on "Submit"
     expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
     expect(page).to have_content("50% Discount")
+    expect(page).to have_content("Discount A")
     expect(page).to have_content("Quantity Threshold: 500")
     expect(page).to have_content("Bulk discount has been updated")
   end
-  #
-  # it 'has a form to edit discount (sad path)' do
-  #   visit edit_merchant_bulk_discount_path(@merchant1, @bulk_discount_1)
-  #
-  #   fill_in "Percentage Discount", with: 50
-  #   click_on "Submit"
-  #   save_and_open_page
-  #
-  #   expect(current_path).to eq(edit_merchant_bulk_discount_path(@merchant1, @bulk_discount_1))
-  #
-  #   expect(page).to have_content("Error: #{error_message(@bulk_discount_1.errors)}")
-  # end
 end

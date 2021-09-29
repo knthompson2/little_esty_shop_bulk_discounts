@@ -15,6 +15,13 @@ class Invoice < ApplicationRecord
     invoice_items.sum("unit_price * quantity")
   end
 
+  def merchant_total_revenue(merchant_id)
+    invoice_items
+      .joins(:item)
+      .where('items.merchant_id = ?', merchant_id)
+      .sum('invoice_items.quantity * invoice_items.unit_price')
+  end
+
   def max_discounts
     invoice_items.joins(item: {merchant: :bulk_discounts})
                  .select("invoice_items.*, MAX(bulk_discounts.percentage_discount) AS maximum_discount")
@@ -28,10 +35,8 @@ class Invoice < ApplicationRecord
     end
     total_revenue - discount.fdiv(100)
   end
-  # def ii_total_discounted_revenue
-  #   invoice_items.sum do |ii|
-  #     ii.applied_discount.percentage_discount * ii.quantity * ii.unit_price
-  #   end
-  # end
 
+  def merchant_invoice_items(merchant)
+    invoice_items.joins(:item).where("items.merchant_id = ?", merchant.id)
+  end
 end

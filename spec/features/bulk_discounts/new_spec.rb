@@ -4,9 +4,9 @@ RSpec.describe "Bulk Discount New Page" do
   before :each do
     @merchant1 = Merchant.create!(name: 'Hair Care')
 
-    @bulk_discount_1 = @merchant1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)
-    @bulk_discount_2 = @merchant1.bulk_discounts.create!(percentage_discount: 5, quantity_threshold: 7)
-    @bulk_discount_3 = @merchant1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 25)
+    @bulk_discount_1 = @merchant1.bulk_discounts.create!(name: "Discount A", percentage_discount: 10, quantity_threshold: 10)
+    @bulk_discount_2 = @merchant1.bulk_discounts.create!(name: "Discount B", percentage_discount: 5, quantity_threshold: 7)
+    @bulk_discount_3 = @merchant1.bulk_discounts.create!(name: "Discount C", percentage_discount: 20, quantity_threshold: 25)
 
     @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
     @customer_2 = Customer.create!(first_name: 'Cecilia', last_name: 'Jones')
@@ -48,6 +48,7 @@ RSpec.describe "Bulk Discount New Page" do
   it 'has a form to create a new discount' do
     visit new_merchant_bulk_discount_path(@merchant1)
 
+    fill_in "Discount Name:", with: "Discount A"
     fill_in "Percentage Discount", with: 50
     fill_in "Quantity Threshold", with: 300
     click_on "Submit"
@@ -55,5 +56,15 @@ RSpec.describe "Bulk Discount New Page" do
     expect(page).to have_content("50% Discount")
     expect(page).to have_content("Quantity Threshold: 300")
     expect(page).to have_content("New bulk discount was created!")
+  end
+
+  it 'has a form to create a new discount(sad path)' do
+    visit new_merchant_bulk_discount_path(@merchant1)
+
+    fill_in "Discount Name", with: "Discount A"
+    fill_in "Quantity Threshold", with: 300
+    click_on "Submit"
+    expect(current_path).to eq(new_merchant_bulk_discount_path(@merchant1))
+    expect(page).to have_content("Error: You must fill in all the blanks")
   end
 end
